@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8">
+		<title>SlideShow para o Gonçalo</title>
+
+		<!-- importar o bootstrap -->
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
+
+		<!-- importar a nossa folha de estilos -->
+		<link rel="stylesheet" type="text/css" href="css/main.css"/>	
+
+		<!-- importar o jQuery -->
+		<script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+	</head>
+	<body>
+	<div class="container">
+		<h1>SlideShow para o Gonçalo</h1>
+
+		<!-- Miniaturas organizadas segundo as grelhas do bootstrap.
+		  	 Contêm ainda uma class criada em estilos.css chamada de
+		     "miniatura" para redimensionar e que será utilizada no
+		     css e no javascript.-->
+		<div class="row">
+			<div class="col-sm-3 col-xs-6">
+				<img id="img1" class="miniatura" src="img/img1.jpg" alt=""/> 
+			</div>
+			<div class="col-sm-3 col-xs-6">
+				<img id="img2" class="miniatura" src="img/img2.jpg"  alt=""/> 
+			</div>
+			<div class="col-sm-3 col-xs-6">
+				<img id="img3" class="miniatura" src="img/img3.jpg" alt=""/> 
+			</div>
+			<div class="col-sm-3 col-xs-6">
+				<img id="img4" class="miniatura" src="img/img4.jpg" alt=""/> 
+			</div>
+		</div>
+		<!-- Imagem em tamanho grande -->
+		<div class="row">
+			<div class="col-xs-12">
+			<!-- Botões para trás e para a frente -->
+				<button id="anterior" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span></button>
+				<img id="imgGrande" class="grande" src="img/img3.jpg" alt=""/>
+				<button id="seguinte" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>
+			</div>
+		</div>
+	</div>
+
+<footer>
+	<p class="copyright">Copyright © Francisco Esteves Trindade. All Rights Reserved.	</p>
+</footer>
+	<script>
+		// Definir logo à partida que a variável pausa = false. Deste modo o slideshow não está em pausa
+		var pausa = false;
+
+		// Quando clicamos nas miniaturas definimos que o atributo src da imagem grande é o mesmo que o da miniatura clicada através do elemento 'this'.
+		// Isto provoca a alteração da imagem grande para o mesmo ficheiro que a imagem pequena.
+
+		// declarar a variável x com o valor 1 (um)
+		var contador = 1;
+
+		$('.miniatura').click(function(){
+			$("#imgGrande").attr('src',	$(this).attr('src'));
+
+			
+			var id = $(this).attr('id');
+			// atribuir o número que surge no final de img ao contador (por exemplo para a img1 atribuir o valor 1).
+			// o parseInt analisa uma string e retorna em número inteiro enquanto o slice(-x) vai cortar a string x caracteres a contar do fim, no nosso caso 1.
+			contador = parseInt(id.slice(-1));
+		});
+
+		//	simula um clique na imagem, serve para iniciar com a img1
+		$("#img"+contador).click();
+
+		// quando se clica no botão anterior subtraímos à variavel x o valor de 1
+		$("#anterior").click(function() {
+			contador = contador - 1;
+		// se continuarmos a clicar em anterior o valor de x chegará, eventualmente, a um valor inferior a 1, neste caso deveremos dizer que passa a assumir o valor da última imagem (no nosso caso 4)
+		  if (contador < 1){ contador = 4;}
+			$("#img"+contador).click();
+		}); 
+
+		// quando se clica no botão seguinte sumamos à variavel x o valor de 1
+		$("#seguinte").click(function() {
+			contador = contador + 1;
+		// idêntico ao que foi feito para o clique no botão seguinte
+		 if (contador > 4){ contador = 1;}
+			$("#img"+contador).click();
+		}); 
+		
+		// definir o intervalo de tempo para o clique automático, quando o estado da pausa não for verdadeiro ! (not)
+		setInterval(function() {
+			if(!pausa) {
+			$("#seguinte").click();
+			};
+		}, 2000);
+			
+		// Quando clicar na imagem grande #imgGrande altero o valor da variável pausa	
+		$("#imgGrande").click(function(event){
+			// o event é um objeto que retém a informação do clique (onde, quando, etc), neste caso vai reter o local onde clicamos e o offsetX é uma propriedade JavaScript que define a posição X (largura) onde se clicou, assim está definido que se clicarmos nos primeiros 25% da página andamos para trás, nos últimos 25% andamos para a frente, no restante espaço (50% ao centro) pausamos o slideshow.
+			if(event.offsetX < $(this).width()*0.25) {
+				contador = contador - 1;	
+			} else if (event.offsetX > $(this).width()*0.75) {	
+				contador = contador + 1;
+			} else {
+				pausa = !pausa;
+			}
+			
+			if (contador > 4){ 
+				contador = 1;
+			};
+			if (contador < 1){ 
+				contador = 4;
+			};
+			$("#img"+contador).click();
+
+		});
+	</script>
+
+	</body>
+</html>
+
+
+
+
+
+
+
